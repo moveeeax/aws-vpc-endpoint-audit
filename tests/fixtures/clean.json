@@ -1,0 +1,99 @@
+{
+  "payload_version": 1,
+  "region": "eu-central-1",
+  "vpcs": [
+    {
+      "vpc_id": "vpc-0clean00000000000",
+      "name": "prod",
+      "cidr_blocks": ["10.0.0.0/16"],
+      "subnets": [
+        {"subnet_id": "subnet-priv-a", "availability_zone": "eu-central-1a", "cidr_block": "10.0.1.0/24"},
+        {"subnet_id": "subnet-priv-b", "availability_zone": "eu-central-1b", "cidr_block": "10.0.2.0/24"},
+        {"subnet_id": "subnet-pub-a", "availability_zone": "eu-central-1a", "cidr_block": "10.0.0.0/24"}
+      ],
+      "route_tables": [
+        {
+          "route_table_id": "rtb-priv-a",
+          "main": false,
+          "associated_subnets": ["subnet-priv-a"],
+          "routes": [
+            {"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "nat_gateway_id": "", "transit_gateway_id": ""},
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0a1b2c3d", "transit_gateway_id": ""}
+          ]
+        },
+        {
+          "route_table_id": "rtb-priv-b",
+          "main": false,
+          "associated_subnets": ["subnet-priv-b"],
+          "routes": [
+            {"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "nat_gateway_id": "", "transit_gateway_id": ""},
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0a1b2c3d", "transit_gateway_id": ""}
+          ]
+        },
+        {
+          "route_table_id": "rtb-public",
+          "main": true,
+          "associated_subnets": ["subnet-pub-a"],
+          "routes": [
+            {"destination_cidr_block": "10.0.0.0/16", "gateway_id": "local", "nat_gateway_id": "", "transit_gateway_id": ""},
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "igw-0f9e8d7c", "nat_gateway_id": "", "transit_gateway_id": ""}
+          ]
+        }
+      ],
+      "nat_gateways": [
+        {"nat_gateway_id": "nat-0a1b2c3d", "subnet_id": "subnet-pub-a", "state": "available"}
+      ],
+      "endpoints": [
+        {
+          "vpc_endpoint_id": "vpce-s3clean",
+          "service_name": "com.amazonaws.eu-central-1.s3",
+          "type": "Gateway",
+          "state": "available",
+          "route_table_ids": ["rtb-priv-a", "rtb-priv-b"],
+          "subnet_ids": [],
+          "private_dns_enabled": null,
+          "security_group_ids": [],
+          "policy_document": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":[\"s3:GetObject\",\"s3:PutObject\"],\"Resource\":[\"arn:aws:s3:::prod-artifacts/*\"]}]}"
+        },
+        {
+          "vpc_endpoint_id": "vpce-ddbclean",
+          "service_name": "com.amazonaws.eu-central-1.dynamodb",
+          "type": "Gateway",
+          "state": "available",
+          "route_table_ids": ["rtb-priv-a", "rtb-priv-b"],
+          "subnet_ids": [],
+          "private_dns_enabled": null,
+          "security_group_ids": [],
+          "policy_document": ""
+        },
+        {
+          "vpc_endpoint_id": "vpce-ssmclean",
+          "service_name": "com.amazonaws.eu-central-1.ssm",
+          "type": "Interface",
+          "state": "available",
+          "route_table_ids": [],
+          "subnet_ids": ["subnet-priv-a", "subnet-priv-b"],
+          "private_dns_enabled": true,
+          "security_group_ids": ["sg-endpoints"],
+          "policy_document": ""
+        }
+      ],
+      "security_groups": [
+        {
+          "group_id": "sg-endpoints",
+          "group_name": "vpc-endpoints",
+          "ip_permissions": [
+            {
+              "ip_protocol": "tcp",
+              "from_port": 443,
+              "to_port": 443,
+              "ipv4_ranges": ["10.0.0.0/16"],
+              "source_group_ids": [],
+              "prefix_list_ids": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

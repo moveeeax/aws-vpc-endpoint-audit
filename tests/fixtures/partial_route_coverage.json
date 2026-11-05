@@ -1,0 +1,70 @@
+{
+  "payload_version": 1,
+  "region": "eu-central-1",
+  "vpcs": [
+    {
+      "vpc_id": "vpc-0partial0000000",
+      "name": "staging",
+      "cidr_blocks": ["10.30.0.0/16"],
+      "subnets": [
+        {"subnet_id": "subnet-s-a", "availability_zone": "eu-central-1a", "cidr_block": "10.30.1.0/24"},
+        {"subnet_id": "subnet-s-b", "availability_zone": "eu-central-1b", "cidr_block": "10.30.2.0/24"},
+        {"subnet_id": "subnet-s-c", "availability_zone": "eu-central-1c", "cidr_block": "10.30.3.0/24"}
+      ],
+      "route_tables": [
+        {
+          "route_table_id": "rtb-s-a",
+          "main": false,
+          "associated_subnets": ["subnet-s-a"],
+          "routes": [
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0s1", "transit_gateway_id": ""}
+          ]
+        },
+        {
+          "route_table_id": "rtb-s-b",
+          "main": false,
+          "associated_subnets": ["subnet-s-b"],
+          "routes": [
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0s1", "transit_gateway_id": ""}
+          ]
+        },
+        {
+          "route_table_id": "rtb-s-c",
+          "main": false,
+          "associated_subnets": ["subnet-s-c"],
+          "routes": [
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0s1", "transit_gateway_id": ""}
+          ]
+        }
+      ],
+      "nat_gateways": [
+        {"nat_gateway_id": "nat-0s1", "subnet_id": "subnet-s-a", "state": "available"}
+      ],
+      "endpoints": [
+        {
+          "vpc_endpoint_id": "vpce-s3partial",
+          "service_name": "com.amazonaws.eu-central-1.s3",
+          "type": "Gateway",
+          "state": "available",
+          "route_table_ids": ["rtb-s-a", "rtb-s-b"],
+          "subnet_ids": [],
+          "private_dns_enabled": null,
+          "security_group_ids": [],
+          "policy_document": ""
+        },
+        {
+          "vpc_endpoint_id": "vpce-ddbunassoc",
+          "service_name": "com.amazonaws.eu-central-1.dynamodb",
+          "type": "Gateway",
+          "state": "available",
+          "route_table_ids": [],
+          "subnet_ids": [],
+          "private_dns_enabled": null,
+          "security_group_ids": [],
+          "policy_document": ""
+        }
+      ],
+      "security_groups": []
+    }
+  ]
+}

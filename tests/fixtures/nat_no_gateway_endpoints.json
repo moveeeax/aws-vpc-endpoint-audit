@@ -1,0 +1,39 @@
+{
+  "payload_version": 1,
+  "region": "eu-central-1",
+  "vpcs": [
+    {
+      "vpc_id": "vpc-0nat000000000000",
+      "name": "legacy",
+      "cidr_blocks": ["10.20.0.0/16"],
+      "subnets": [
+        {"subnet_id": "subnet-l-priv-a", "availability_zone": "eu-central-1a", "cidr_block": "10.20.1.0/24"},
+        {"subnet_id": "subnet-l-pub-a", "availability_zone": "eu-central-1a", "cidr_block": "10.20.0.0/24"}
+      ],
+      "route_tables": [
+        {
+          "route_table_id": "rtb-l-priv-a",
+          "main": false,
+          "associated_subnets": ["subnet-l-priv-a"],
+          "routes": [
+            {"destination_cidr_block": "10.20.0.0/16", "gateway_id": "local", "nat_gateway_id": "", "transit_gateway_id": ""},
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "", "nat_gateway_id": "nat-0deadbeef", "transit_gateway_id": ""}
+          ]
+        },
+        {
+          "route_table_id": "rtb-l-public",
+          "main": true,
+          "associated_subnets": ["subnet-l-pub-a"],
+          "routes": [
+            {"destination_cidr_block": "0.0.0.0/0", "gateway_id": "igw-0abcdef0", "nat_gateway_id": "", "transit_gateway_id": ""}
+          ]
+        }
+      ],
+      "nat_gateways": [
+        {"nat_gateway_id": "nat-0deadbeef", "subnet_id": "subnet-l-pub-a", "state": "available"}
+      ],
+      "endpoints": [],
+      "security_groups": []
+    }
+  ]
+}

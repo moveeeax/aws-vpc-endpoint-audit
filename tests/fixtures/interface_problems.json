@@ -1,0 +1,106 @@
+{
+  "payload_version": 1,
+  "region": "eu-central-1",
+  "vpcs": [
+    {
+      "vpc_id": "vpc-0iface000000000",
+      "name": "data",
+      "cidr_blocks": ["10.40.0.0/16"],
+      "subnets": [
+        {"subnet_id": "subnet-d-a", "availability_zone": "eu-central-1a", "cidr_block": "10.40.1.0/24"},
+        {"subnet_id": "subnet-d-b", "availability_zone": "eu-central-1b", "cidr_block": "10.40.2.0/24"},
+        {"subnet_id": "subnet-d-c", "availability_zone": "eu-central-1c", "cidr_block": "10.40.3.0/24"}
+      ],
+      "route_tables": [
+        {
+          "route_table_id": "rtb-d-a",
+          "main": true,
+          "associated_subnets": ["subnet-d-a", "subnet-d-b", "subnet-d-c"],
+          "routes": [
+            {"destination_cidr_block": "10.40.0.0/16", "gateway_id": "local", "nat_gateway_id": "", "transit_gateway_id": ""}
+          ]
+        }
+      ],
+      "nat_gateways": [],
+      "endpoints": [
+        {
+          "vpc_endpoint_id": "vpce-ecrunreachable",
+          "service_name": "com.amazonaws.eu-central-1.ecr.dkr",
+          "type": "Interface",
+          "state": "available",
+          "route_table_ids": [],
+          "subnet_ids": ["subnet-d-a", "subnet-d-b"],
+          "private_dns_enabled": true,
+          "security_group_ids": ["sg-locked"],
+          "policy_document": ""
+        },
+        {
+          "vpc_endpoint_id": "vpce-nodns",
+          "service_name": "com.amazonaws.eu-central-1.ssm",
+          "type": "Interface",
+          "state": "available",
+          "route_table_ids": [],
+          "subnet_ids": ["subnet-d-a"],
+          "private_dns_enabled": false,
+          "security_group_ids": ["sg-open443"],
+          "policy_document": "{\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":\"*\"}]}"
+        },
+        {
+          "vpc_endpoint_id": "vpce-partialcidr",
+          "service_name": "com.amazonaws.eu-central-1.logs",
+          "type": "Interface",
+          "state": "pending",
+          "route_table_ids": [],
+          "subnet_ids": ["subnet-d-a", "subnet-d-c"],
+          "private_dns_enabled": true,
+          "security_group_ids": ["sg-narrow"],
+          "policy_document": ""
+        }
+      ],
+      "security_groups": [
+        {
+          "group_id": "sg-locked",
+          "group_name": "no-ingress",
+          "ip_permissions": [
+            {
+              "ip_protocol": "tcp",
+              "from_port": 22,
+              "to_port": 22,
+              "ipv4_ranges": ["10.40.0.0/16"],
+              "source_group_ids": [],
+              "prefix_list_ids": []
+            }
+          ]
+        },
+        {
+          "group_id": "sg-open443",
+          "group_name": "endpoints",
+          "ip_permissions": [
+            {
+              "ip_protocol": "tcp",
+              "from_port": 443,
+              "to_port": 443,
+              "ipv4_ranges": ["10.40.0.0/16"],
+              "source_group_ids": [],
+              "prefix_list_ids": []
+            }
+          ]
+        },
+        {
+          "group_id": "sg-narrow",
+          "group_name": "endpoints-one-subnet",
+          "ip_permissions": [
+            {
+              "ip_protocol": "tcp",
+              "from_port": 443,
+              "to_port": 443,
+              "ipv4_ranges": ["10.40.1.0/24"],
+              "source_group_ids": [],
+              "prefix_list_ids": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
